@@ -6,7 +6,9 @@ RUN apk add --no-cache git
 
 WORKDIR /app
 
-COPY ./recipes ./src ./composer.json ./
+COPY ./recipes ./recipes
+COPY ./src ./src
+COPY ./composer.json ./
 
 # Copy the composer command to this images by using the composer images with latest tag
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
