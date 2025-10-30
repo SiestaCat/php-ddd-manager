@@ -6,6 +6,8 @@ use Siestacat\DddManager\BoundedContexts\Domain\BoundedContexts;
 
 interface Kernel
 {
+    public BoundedContexts $bounded_contexts { get; }
+
     public function callFrameworkKernel():FrameworkKernel;
 
     public function getEnvVars():array;
@@ -14,5 +16,5 @@ interface Kernel
 
     public function getPsr4Namespace(string $srcDirName):string;
 
-    public BoundedContexts $bounded_contexts { get; }
+    public function getVendorChildDir():?string;    
 }

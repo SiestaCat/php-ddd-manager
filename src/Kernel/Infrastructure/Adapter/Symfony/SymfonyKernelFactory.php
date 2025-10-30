@@ -15,6 +15,13 @@ class SymfonyKernelFactory implements FrameworkKernelFactory
     public function factory(Framework $framework, Kernel $core_kernel):FrameworkKernel
     {
         $env_vars = $core_kernel->getEnvVars();
-        return new SymfonyKernel($framework, $core_kernel, $env_vars['APP_ENV'], boolval($env_vars['APP_DEBUG']));
+        return new SymfonyKernel
+        (
+            framework: $framework,
+            core_kernel: $core_kernel,
+            environment: $env_vars['APP_ENV'],
+            debug: boolval($env_vars['APP_DEBUG']),
+            overrided_project_dir: $core_kernel->getVendorChildDir()
+        );
     }
 }

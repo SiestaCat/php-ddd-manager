@@ -40,7 +40,8 @@ class Kernel implements PortKernel
 
     final public function __construct
     (
-        private readonly array $env_vars
+        private readonly array $env_vars,
+        private readonly bool $override_project_dir = true
     )
     {
         $framework_class_name = new FrameworkRepository()->getClassNameByName($this->framework_name);
@@ -96,5 +97,16 @@ class Kernel implements PortKernel
     public function getEnvVars():array
     {
         return $this->env_vars;
+    }
+
+    public function getVendorChildDir():?string;
+    {
+        return
+        $this->override_project_dir
+        ?
+        realpath(__DIR__ . '/../../..') // /app/path/vendor/siestacat/ddd-manager -> /app/path
+        :
+        null
+        ;
     }
 }

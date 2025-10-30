@@ -29,10 +29,16 @@ class SymfonyKernel extends BaseKernel implements FrameworkKernel
         private readonly SymfonyFramework $framework,
         private readonly Kernel $core_kernel,
         string $environment,
-        bool $debug
+        bool $debug,
+        private ?string $project_dir = null
     )
     {
         parent::__construct($environment, $debug);
+    }
+
+    final public function getProjectDir():string
+    {
+        return $this->project_dir?:parent::getProjectDir();
     }
 
     final public function registerBundles(): iterable
