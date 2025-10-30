@@ -6,7 +6,7 @@ use Siestacat\DddManager\BoundedContexts\Domain\BoundedContexts;
 
 interface Kernel
 {
-    public BoundedContexts $bounded_contexts { get; }
+    public function bounded_contexts():BoundedContexts;
 
     public function callFrameworkKernel():FrameworkKernel;
 

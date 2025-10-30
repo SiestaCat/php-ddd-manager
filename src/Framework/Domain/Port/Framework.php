@@ -8,7 +8,7 @@ use Siestacat\DddManager\Kernel\Infrastructure\Adapter\Symfony\SymfonyConsoleApp
 
 interface Framework
 {
-    public BoundedContexts $bounded_contexts { get; }
+    public function bounded_contexts():BoundedContexts;
 
     public static function getName():string;
 

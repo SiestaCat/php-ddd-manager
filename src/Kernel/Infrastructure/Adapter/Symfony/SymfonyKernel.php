@@ -57,7 +57,7 @@ class SymfonyKernel extends BaseKernel implements FrameworkKernel
 
     private function configureContainer(ContainerConfigurator $container, LoaderInterface $loader, ContainerBuilder $builder):void
     {
-        foreach($this->framework->bounded_contexts as $bounded_context)
+        foreach($this->framework->bounded_contexts() as $bounded_context)
         {
             $configDir = $bounded_context->getConfigPathFramework(SymfonyFramework::getName());
 
@@ -113,7 +113,7 @@ class SymfonyKernel extends BaseKernel implements FrameworkKernel
 
     private function configureRoutes(RoutingConfigurator $routes):void
     {
-        foreach($this->framework->bounded_contexts as $bounded_context)
+        foreach($this->framework->bounded_contexts() as $bounded_context)
         {
             $configDir = $bounded_context->getConfigPathFramework(SymfonyFramework::getName());
 
@@ -135,13 +135,13 @@ class SymfonyKernel extends BaseKernel implements FrameworkKernel
     private function addPathsToTwig(ContainerBuilder $builder):void
     {
         $paths = [];
-        foreach($this->framework->bounded_contexts as $bounded_context)
+        foreach($this->framework->bounded_contexts() as $bounded_context)
         {
             $templatesDir = $bounded_context->getSubPathFramework(SymfonyFramework::getName(), 'templates');
 
             if($templatesDir && is_dir($templatesDir))
             {
-                $paths[$templatesDir] = $bounded_context->full_name_snake;
+                $paths[$templatesDir] = $bounded_context->full_name_snake();
             }
         }
 
@@ -173,7 +173,7 @@ class SymfonyKernel extends BaseKernel implements FrameworkKernel
         $unique_files = [];
         $paths = [];
 
-        foreach($this->framework->bounded_contexts as $bounded_context)
+        foreach($this->framework->bounded_contexts() as $bounded_context)
         {
             $translationsDir = $bounded_context->getSubPathFramework(SymfonyFramework::getName(), 'translations');
 
@@ -200,9 +200,9 @@ class SymfonyKernel extends BaseKernel implements FrameworkKernel
 
                     $domain_name = join('.', array_slice($filename_split, 0, -2));
 
-                    if($domain_name <> 'messages' && $domain_name <> $bounded_context->full_name_snake_dot)
+                    if($domain_name <> 'messages' && $domain_name <> $bounded_context->full_name_snake_dot())
                     {
-                        throw new InvalidTranslationFileNameException($fileInfo->getFilename(), $bounded_context->full_name_snake_dot);
+                        throw new InvalidTranslationFileNameException($fileInfo->getFilename(), $bounded_context->full_name_snake_dot());
                     }
 
                     $unique_files[$fileInfo->getFilename()] = $fileInfo->getPath();
@@ -240,18 +240,18 @@ class SymfonyKernel extends BaseKernel implements FrameworkKernel
     {
         $mappings = [];
 
-        foreach($this->framework->bounded_contexts as $bounded_context)
+        foreach($this->framework->bounded_contexts() as $bounded_context)
         {
             $entityDir = $bounded_context->getSubPath('/Infrastructure/Framework/Doctrine/Orm/Mapping');
 
             if($entityDir && is_dir($entityDir))
             {
-                $mappings[$bounded_context->full_name_snake] = [
+                $mappings[$bounded_context->full_name_snake()] = [
                     'is_bundle' => false,
                     'type' => 'xml',
                     'dir' => $entityDir,
-                    'prefix' => $bounded_context->namespace . '\\Domain\\Entity',
-                    'alias' => $bounded_context->full_name
+                    'prefix' => $bounded_context->namespace() . '\\Domain\\Entity',
+                    'alias' => $bounded_context->full_name()
                 ];
             }
         }
@@ -285,7 +285,7 @@ class SymfonyKernel extends BaseKernel implements FrameworkKernel
     {
         $migrationsPaths = [];
 
-        foreach($this->framework->bounded_contexts as $bounded_context)
+        foreach($this->framework->bounded_contexts() as $bounded_context)
         {
             $migrationsDir = $bounded_context->getSubPath('/Infrastructure/Framework/Doctrine/Migrations', false);
 
@@ -294,7 +294,7 @@ class SymfonyKernel extends BaseKernel implements FrameworkKernel
                 mkdir($migrationsDir, 0755, true);
                 touch($migrationsDir . '/.gitignore');
             }
-            $migrationsPaths[$bounded_context->namespace . '\\Infrastructure\\Framework\\Doctrine\\Orm\\Migrations'] = $migrationsDir;
+            $migrationsPaths[$bounded_context->namespace() . '\\Infrastructure\\Framework\\Doctrine\\Orm\\Migrations'] = $migrationsDir;
         }
 
         if(!empty($migrationsPaths))

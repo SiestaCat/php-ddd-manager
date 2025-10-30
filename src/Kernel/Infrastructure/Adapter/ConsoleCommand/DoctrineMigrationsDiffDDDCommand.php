@@ -63,9 +63,9 @@ class DoctrineMigrationsDiffDDDCommand extends Command
 
             $createdMigrations = [];
 
-            foreach ($this->kernel->bounded_contexts as $context) {
+            foreach ($this->kernel->bounded_contexts() as $context) {
                 // Skip context if context filter is specified and doesn't match
-                if ($contextFilter && $context->full_name !== $contextFilter) {
+                if ($contextFilter && $context->full_name() !== $contextFilter) {
                     continue;
                 }
 
@@ -74,14 +74,14 @@ class DoctrineMigrationsDiffDDDCommand extends Command
                 // Skip context if no tables found
                 if (empty($tables)) {
                     if ($output->isVeryVerbose()) {
-                        $io->note(sprintf('Skipping context "%s" - no entities found', $context->full_name));
+                        $io->note(sprintf('Skipping context "%s" - no entities found', $context->full_name()));
                     }
                     continue;
                 }
 
                 $tableFilter = $this->generateTableFilter($tables);
 
-                $namespace = $context->namespace . '\\Infrastructure\\Framework\\Doctrine\\Orm\\Migrations';
+                $namespace = $context->namespace() . '\\Infrastructure\\Framework\\Doctrine\\Orm\\Migrations';
 
                 $command = [
                     'php',
@@ -108,7 +108,7 @@ class DoctrineMigrationsDiffDDDCommand extends Command
 
                 // Show processing info in verbose mode
                 if ($output->isVeryVerbose()) {
-                    $io->section(sprintf('Processing context: %s', $context->full_name));
+                    $io->section(sprintf('Processing context: %s', $context->full_name()));
                     $io->text(sprintf('Generating migration for namespace: %s', $namespace));
                     $io->text(sprintf('Table filter: %s', $tableFilter));
                 }
@@ -122,7 +122,7 @@ class DoctrineMigrationsDiffDDDCommand extends Command
 
                     // Show full process output in very verbose mode
                     if ($output->isVeryVerbose()) {
-                        $io->success(sprintf('Migration generated successfully for context: %s', $context->full_name));
+                        $io->success(sprintf('Migration generated successfully for context: %s', $context->full_name()));
                         if ($processOutput) {
                             $io->text($processOutput);
                         }
@@ -135,7 +135,7 @@ class DoctrineMigrationsDiffDDDCommand extends Command
                         $createdMigrations[] = $migrationPath;
                     }
                 } else {
-                    $io->error(sprintf('Failed to generate migration for context: %s', $context->full_name));
+                    $io->error(sprintf('Failed to generate migration for context: %s', $context->full_name()));
                     $io->text($process->getErrorOutput());
                 }
 
@@ -185,8 +185,8 @@ class DoctrineMigrationsDiffDDDCommand extends Command
         $allMetadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
 
         // Initialize empty arrays for all contexts
-        foreach ($this->kernel->bounded_contexts as $context) {
-            $this->contextTables[$context->full_name] = [];
+        foreach ($this->kernel->bounded_contexts() as $context) {
+            $this->contextTables[$context->full_name()] = [];
         }
 
         /** @var ClassMetadata $metadata */
@@ -194,11 +194,11 @@ class DoctrineMigrationsDiffDDDCommand extends Command
             $entityClass = $metadata->getName();
 
             // Find which context this entity belongs to
-            foreach ($this->kernel->bounded_contexts as $context) {
-                $contextEntityNamespace = $context->namespace . '\\Domain\\Entity';
+            foreach ($this->kernel->bounded_contexts() as $context) {
+                $contextEntityNamespace = $context->namespace() . '\\Domain\\Entity';
                 if (strpos($entityClass, $contextEntityNamespace) === 0) {
                     $tableName = $metadata->getTableName();
-                    $this->contextTables[$context->full_name][] = $tableName;
+                    $this->contextTables[$context->full_name()][] = $tableName;
                     break; // Entity found in this context, no need to check others
                 }
             }
@@ -210,7 +210,7 @@ class DoctrineMigrationsDiffDDDCommand extends Command
      */
     private function getTables(BoundedContext $context): array
     {
-        return $this->contextTables[$context->full_name];
+        return $this->contextTables[$context->full_name()];
     }
 
     /**

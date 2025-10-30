@@ -4,64 +4,7 @@ namespace Siestacat\DddManager\BoundedContexts\Domain;
 
 final class BoundedContext
 {
-    public string $short_name
-    {
-        get
-        {
-            return $this->rel_path_sliced[array_key_last($this->rel_path_sliced)];
-        }
-    }
-
-    public string $full_name
-    {
-        get
-        {
-            return join('', array_map('ucwords', $this->rel_path_sliced));
-        }
-    }
-
-    public string $short_name_snake
-    {
-        get
-        {
-            return mb_strtolower($this->short_name);
-        }
-    }
-
-    public string $full_name_snake
-    {
-        get
-        {
-            return join('_', array_map('mb_strtolower', $this->rel_path_sliced));
-        }
-    }
-
-    public string $full_name_snake_dot
-    {
-        get
-        {
-            return join('.', array_map('mb_strtolower', $this->rel_path_sliced));
-        }
-    }
-
-    private array $rel_path_sliced
-    {
-        get
-        {
-            $rel_path = substr($this->abs_path, strlen($this->base_path));
-            return explode(DIRECTORY_SEPARATOR, trim($rel_path, DIRECTORY_SEPARATOR));
-        }
-    }
-
     private string $base_namespace;
-
-    public string $namespace
-    {
-        get
-        {
-            return $this->base_namespace . '\\' . join('\\', $this->rel_path_sliced);
-        }
-    }
 
     public function __construct
     (
@@ -71,6 +14,42 @@ final class BoundedContext
     )
     {
         $this->base_namespace = rtrim($base_namespace, '\\');
+    }
+
+    public function short_name():string
+    {
+        return $this->rel_path_sliced[array_key_last($this->rel_path_sliced())];
+    }
+
+    public function full_name():string
+    {
+        return join('', array_map('ucwords', $this->rel_path_sliced()));
+    }
+
+    public function short_name_snake():string
+    {
+        return mb_strtolower($this->short_name());
+    }
+
+    public function full_name_snake():string
+    {
+        return join('_', array_map('mb_strtolower', $this->rel_path_sliced()));
+    }
+
+    public function full_name_snake_dot():string
+    {
+        return join('.', array_map('mb_strtolower', $this->rel_path_sliced()));
+    }
+
+    private function rel_path_sliced():string
+    {
+        $rel_path = substr($this->abs_path, strlen($this->base_path));
+        return explode(DIRECTORY_SEPARATOR, trim($rel_path, DIRECTORY_SEPARATOR));
+    }
+
+    public function namespace():string
+    {
+        return $this->base_namespace . '\\' . join('\\', $this->rel_path_sliced());
     }
 
     public function getConfigPathFramework(string $framework_name, ?string $subpath = null):?string

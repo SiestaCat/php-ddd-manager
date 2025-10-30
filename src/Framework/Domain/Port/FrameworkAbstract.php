@@ -9,12 +9,11 @@ use Siestacat\DddManager\Kernel\Infrastructure\Adapter\Symfony\SymfonyConsoleApp
 
 abstract class FrameworkAbstract implements Framework
 {
-    final public BoundedContexts $bounded_contexts
+    protected BoundedContexts $bounded_contexts;
+
+    final public function bounded_contexts():BoundedContexts
     {
-        get
-        {
-            return $this->bounded_contexts;
-        }
+        return $this->bounded_contexts;
     }
 
     final public function getKernelFactory():FrameworkKernelFactory

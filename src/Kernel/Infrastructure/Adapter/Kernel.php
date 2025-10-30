@@ -18,25 +18,7 @@ class Kernel implements PortKernel
 
     private FrameworkKernel $framework_kernel;
 
-    public BoundedContexts $bounded_contexts
-    {
-        get
-        {
-            return $this->bounded_contexts;
-        }
-    }
-
-    private string $framework_name
-    {
-        get
-        {
-            if(!isset($this->env_vars['APP_FRAMEWORK']))
-            {
-                throw new AppFrameworkEnvVarRequiredException;
-            }
-            return $this->env_vars['APP_FRAMEWORK'];
-        }
-    }
+    private BoundedContexts $bounded_contexts;
 
     final public function __construct
     (
@@ -44,12 +26,21 @@ class Kernel implements PortKernel
         private readonly bool $override_project_dir = true
     )
     {
-        $framework_class_name = new FrameworkRepository()->getClassNameByName($this->framework_name);
-        $this->framework = new FrameworkFactory()->factory(class_name: $framework_class_name);
+        $framework_class_name = (new FrameworkRepository)->getClassNameByName($this->framework_name());
+        $this->framework = (new FrameworkFactory)->factory(class_name: $framework_class_name);
         $base_path = rtrim($this->callFrameworkKernel()->getProjectDir()) . '/src/BoundedContexts';
         $psr4_namespace = $this->getPsr4Namespace('src') . 'BoundedContexts';
-        $this->bounded_contexts = new BoundedContextRepository($base_path, $psr4_namespace)->findAll();
+        $this->bounded_contexts = (new BoundedContextRepository($base_path, $psr4_namespace))->findAll();
         $this->framework->setBoundedContexts($this->bounded_contexts);
+    }
+
+    private function framework_name():string
+    {
+        if(!isset($this->env_vars['APP_FRAMEWORK']))
+        {
+            throw new AppFrameworkEnvVarRequiredException;
+        }
+        return $this->env_vars['APP_FRAMEWORK'];
     }
 
     public function getPsr4Namespace(string $srcDirName):string
@@ -108,5 +99,10 @@ class Kernel implements PortKernel
         :
         null
         ;
+    }
+
+    public function bounded_contexts():BoundedContexts
+    {
+        return $this->bounded_contexts;
     }
 }
