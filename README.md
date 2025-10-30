@@ -4,10 +4,10 @@
 
 ### Build the image
 ```bash
-docker build -t ddd-manager .
+docker build -t ddd-manager81 .
 ```
 
 ### Run PHPUnit tests
 ```bash
-docker run --rm -it ddd-manager ./vendor/bin/phpunit
+docker run --rm -it ddd-manager81 ./vendor/bin/phpunit
 ```
