@@ -99,7 +99,7 @@ class Kernel implements PortKernel
         return $this->env_vars;
     }
 
-    public function getVendorChildDir():?string;
+    public function getVendorChildDir():?string
     {
         return
         $this->override_project_dir
