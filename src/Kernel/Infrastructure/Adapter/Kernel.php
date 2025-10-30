@@ -104,7 +104,7 @@ class Kernel implements PortKernel
         return
         $this->override_project_dir
         ?
-        realpath(__DIR__ . '/../../..') // /app/path/vendor/siestacat/ddd-manager -> /app/path
+        realpath(__DIR__ . '/../../../../../../..') // /vendor/siestacat/ddd-manager/src/Kernel/Infrastructure/Adapter/Kernel.php -> /
         :
         null
         ;
