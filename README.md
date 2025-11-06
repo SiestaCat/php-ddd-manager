@@ -83,7 +83,7 @@ Allowed files extensions, otherwise the file will be ignored
 - res
 - dat
 - ini
-- json- 
+- json
 
 ## Usage
 
