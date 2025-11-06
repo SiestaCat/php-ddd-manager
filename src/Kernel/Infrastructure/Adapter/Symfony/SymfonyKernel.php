@@ -353,10 +353,13 @@ class SymfonyKernel extends BaseKernel implements FrameworkKernel
 
     private function registerConsoleCommands(ContainerBuilder $builder):void
     {
-        // Register DoctrineMigrationsDiffDDDCommand with core kernel and entity manager injection
         $builder->register('app.doctrine_migrations_diff_ddd_command', 'Siestacat\DddManager\Kernel\Infrastructure\Adapter\ConsoleCommand\DoctrineMigrationsDiffDDDCommand')
             ->addArgument(new Reference('app.core_kernel'))
             ->addArgument(new Reference('doctrine.orm.entity_manager'))
+            ->addTag('console.command');
+        
+        $builder->register('debug.ddd.bounded_contexts_command', 'Siestacat\DddManager\Kernel\Infrastructure\Adapter\ConsoleCommand\DebugBoundedContextsCommand')
+            ->addArgument(new Reference('app.core_kernel'))
             ->addTag('console.command');
     }
 
