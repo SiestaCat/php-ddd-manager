@@ -8,6 +8,8 @@ interface Kernel
 {
     public BoundedContexts $bounded_contexts { get; }
 
+    public string $project_dir { get; }
+
     public function callFrameworkKernel():FrameworkKernel;
 
     public function getEnvVars():array;
@@ -15,6 +17,4 @@ interface Kernel
     public function callFrameworkConsoleApplication():FrameworkConsoleApplication;
 
     public function getPsr4Namespace(string $srcDirName):string;
-
-    public function getVendorChildDir():?string;    
 }

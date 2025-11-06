@@ -21,7 +21,7 @@ class SymfonyKernelFactory implements FrameworkKernelFactory
             core_kernel: $core_kernel,
             environment: $env_vars['APP_ENV'],
             debug: boolval($env_vars['APP_DEBUG']),
-            project_dir: $core_kernel->getVendorChildDir()
+            project_dir: $core_kernel->project_dir
         );
     }
 }

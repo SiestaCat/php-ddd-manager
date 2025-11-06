@@ -16,5 +16,5 @@ use Siestacat\DddManager\Kernel\Infrastructure\Adapter\Kernel;
 return function (array $context)
 {
     return
-    new Kernel($context)->callFrameworkConsoleApplication();
+    new Kernel(dirname(__DIR__), $context)->callFrameworkConsoleApplication();
 };
