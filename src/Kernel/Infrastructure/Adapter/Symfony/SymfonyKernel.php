@@ -73,14 +73,15 @@ class SymfonyKernel extends BaseKernel implements FrameworkKernel
             {
                 $container->import($configDir.'/services/'.$this->environment.'/*.{php,yaml}', null, 'not_found');
             }
-            
+
+            $container->import($configDir.'/{services}_'.$this->environment.'.yaml');
+            $container->import($configDir.'/{services}_'.$this->environment.'.php');
 
             if (is_file($configDir.'/services.yaml')) {
                 $container->import($configDir.'/services.yaml');
-                $container->import($configDir.'/{services}_'.$this->environment.'.yaml');
+                
             } else {
                 $container->import($configDir.'/{services}.php');
-                $container->import($configDir.'/{services}_'.$this->environment.'.php');
             }
         }
 
