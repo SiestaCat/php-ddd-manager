@@ -14,8 +14,10 @@ use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use DirectoryIterator;
 use Siestacat\DddManager\Kernel\Domain\Port\Kernel;
+use Siestacat\DddManager\Kernel\Infrastructure\Adapter\Symfony\Exception\DoctrineTypeAlreadyExistsException;
 use Siestacat\DddManager\Kernel\Infrastructure\Adapter\Symfony\Exception\InvalidTranslationFileNameException;
 use Siestacat\DddManager\Kernel\Infrastructure\Adapter\Symfony\Exception\TranslationFileAlreadyExistsException;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * @framework Symfony
@@ -98,6 +100,7 @@ class SymfonyKernel extends BaseKernel implements FrameworkKernel
         if($builder->hasExtension('doctrine'))
         {
             $this->addMappingsToDoctrine($builder);
+            $this->addTypesToDoctrine($builder);
         }
 
         if($builder->hasExtension('doctrine_migrations'))
@@ -277,6 +280,64 @@ class SymfonyKernel extends BaseKernel implements FrameworkKernel
             $builder->loadFromExtension('doctrine', [
                 'orm' => [
                     'mappings' => $mergedMappings
+                ]
+            ]);
+        }
+    }
+
+    private function addTypesToDoctrine(ContainerBuilder $builder):void
+    {
+        $types = [];
+
+        foreach($this->framework->bounded_contexts as $bounded_context)
+        {
+            $typesFilePath = $bounded_context->getSubPath('/Infrastructure/Framework/Doctrine/Orm/Type/types.yaml');
+
+            if($typesFilePath && ($types_array = Yaml::parseFile($typesFilePath)) && is_array($types_array))
+            {
+                foreach($types_array as $type_name => $type_class)
+                {
+                    if(array_key_exists($type_name, $types))
+                    {
+                        throw new DoctrineTypeAlreadyExistsException($type_name);
+                    }
+
+                    $types[$type_name] = [
+                        'class' => $type_class,
+                        'commented' => false
+                    ];
+                }
+            }
+        }
+
+        if(!empty($types))
+        {
+            $existingConfig = $builder->getExtensionConfig('doctrine');
+            $mergedTypes = [];
+
+            // Merge existing types from config
+            foreach($existingConfig as $config)
+            {
+                if(isset($config['dbal']['types']))
+                {
+                    $mergedTypes = array_merge($mergedTypes, $config['dbal']['types']);
+                }
+            }
+
+            foreach(array_keys($mergedTypes) as $type_name)
+            {
+                if(array_key_exists($type_name, $types))
+                {
+                    throw new DoctrineTypeAlreadyExistsException($type_name);
+                }
+            }
+
+            // Add our new types
+            $mergedTypes = array_merge($mergedTypes, $types);
+
+            $builder->loadFromExtension('doctrine', [
+                'dbal' => [
+                    'types' => $mergedTypes
                 ]
             ]);
         }

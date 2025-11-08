@@ -30,6 +30,14 @@ Executing `php bin/console doctrine:migrations:diff:ddd` all migrations related 
 
 `src/BoundedContexts/Auth/User/Infrastructure/Framework/Doctrine/Orm/Migrations`
 
+**Types (Value objects)**
+
+`src/BoundedContexts/Auth/User/Infrastructure/Framework/Doctrine/Orm/Type/types.yaml`
+
+Yaml file example:
+
+`user_is_active: App\BoundedContexts\Auth\User\Infrastructure\Framework\Doctrine\Orm\Type\UserIsActiveType`
+
 ## Symfony Structure Example
 
 **Bundles**
