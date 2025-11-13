@@ -4,27 +4,11 @@ namespace Siestacat\DddManager\BoundedContexts\Domain;
 
 final class BoundedContext
 {
-    public string $short_name
-    {
-        get
-        {
-            return $this->rel_path_sliced[array_key_last($this->rel_path_sliced)];
-        }
-    }
-
     public string $full_name
     {
         get
         {
             return join('', array_map('ucwords', $this->rel_path_sliced));
-        }
-    }
-
-    public string $short_name_snake
-    {
-        get
-        {
-            return mb_strtolower($this->short_name);
         }
     }
 
