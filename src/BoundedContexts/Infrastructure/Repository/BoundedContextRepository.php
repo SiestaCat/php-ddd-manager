@@ -8,10 +8,8 @@ use Siestacat\DddManager\BoundedContexts\Domain\BoundedContexts;
 use Siestacat\DddManager\BoundedContexts\Domain\Exception\NotBoundedContextFoundOnPathException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use function parse_ini_file;
 
-/**
- * @framework Symfony
- */
 class BoundedContextRepository
 {
     private BoundedContexts $bounded_contexts;
@@ -36,12 +34,14 @@ class BoundedContextRepository
             {
                 if (!$it->isDot() && basename($it->key()) === '.dddcontext')
                 {
-                    $bounded_contexts[] =
+                    $bounded_context_config = parse_ini_file($it->getRealPath());
+                    $bounded_contexts[] = 
                     new BoundedContext
                     (
-                        abs_path: dirname($it->key()),
+                        abs_path: dirname($it->getRealPath()),
                         base_path: $this->base_abs_path,
-                        base_namespace: $this->base_namespace
+                        base_namespace: $this->base_namespace,
+                        override_name_snake: isset($bounded_context_config['name']) && is_string($bounded_context_config['name']) ? trim($bounded_context_config['name']) : null
                     );
                 }
                 $it->next();
