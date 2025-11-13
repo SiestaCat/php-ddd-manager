@@ -4,11 +4,19 @@ namespace Siestacat\DddManager\BoundedContexts\Domain;
 
 final class BoundedContext
 {
+    private array $name_array
+    {
+        get
+        {
+            return $this->override_name_snake?explode('_', $this->override_name_snake):array_map('mb_strtolower', $this->rel_path_sliced);
+        }
+    }
+
     public string $name
     {
         get
         {
-            return join('', array_map('ucwords', $this->rel_path_sliced));
+            return join('', array_map('ucwords', $this->name_array));
         }
     }
 
@@ -16,7 +24,7 @@ final class BoundedContext
     {
         get
         {
-            return join('_', array_map('mb_strtolower', $this->rel_path_sliced));
+            return join('_', array_map('mb_strtolower', $this->name_array));
         }
     }
 
@@ -24,7 +32,7 @@ final class BoundedContext
     {
         get
         {
-            return join('.', array_map('mb_strtolower', $this->rel_path_sliced));
+            return join('.', array_map('mb_strtolower', $this->name_array));
         }
     }
 
