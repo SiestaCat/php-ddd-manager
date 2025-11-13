@@ -32,9 +32,9 @@ class DebugBoundedContextsCommand extends Command
         {
             $table_rows[] =
             [
-                $bounded_context->full_name,
-                $bounded_context->full_name_snake,
-                $bounded_context->full_name_snake_dot,
+                $bounded_context->name,
+                $bounded_context->name_snake,
+                $bounded_context->name_snake_dot,
                 $bounded_context->namespace,
                 $bounded_context->abs_path
             ];

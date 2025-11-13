@@ -4,7 +4,7 @@ namespace Siestacat\DddManager\BoundedContexts\Domain;
 
 final class BoundedContext
 {
-    public string $full_name
+    public string $name
     {
         get
         {
@@ -12,7 +12,7 @@ final class BoundedContext
         }
     }
 
-    public string $full_name_snake
+    public string $name_snake
     {
         get
         {
@@ -20,7 +20,7 @@ final class BoundedContext
         }
     }
 
-    public string $full_name_snake_dot
+    public string $name_snake_dot
     {
         get
         {
@@ -51,7 +51,8 @@ final class BoundedContext
     (
         public readonly string $abs_path,
         private readonly string $base_path,
-        string $base_namespace
+        string $base_namespace,
+        private readonly ?string $override_name_snake
     )
     {
         $this->base_namespace = rtrim($base_namespace, '\\');
