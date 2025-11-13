@@ -8,7 +8,7 @@ final class BoundedContext
     {
         get
         {
-            return $this->override_name_snake?explode('_', $this->override_name_snake):array_map('mb_strtolower', $this->rel_path_sliced);
+            return $this->override_name_snake?explode('_', $this->override_name_snake):$this->rel_path_sliced;
         }
     }
 
